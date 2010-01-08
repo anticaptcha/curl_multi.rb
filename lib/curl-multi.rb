@@ -256,7 +256,7 @@ module Curl
           /* if POST */
           if (body != Qnil) {
             char *c_body = StringValuePtr(body);
-            uint body_sz = RSTRING(body)->len;
+            uint body_sz = RSTRING_LEN(body);
             curl_easy_setopt(easy_handle, CURLOPT_POST, 1);
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDS, c_body);
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDSIZE, body_sz);
@@ -300,13 +300,13 @@ module Curl
 
 
           /* Put the given fds into the sets. */
-          for (i = 0; i < RARRAY(rfda)->len; i++) {
-            int fd = FIX2INT(RARRAY(rfda)->ptr[i]);
+          for (i = 0; i < RARRAY_LEN(rfda); i++) {
+            int fd = FIX2INT(RARRAY_PTR(rfda)[i]);
             FD_SET(fd, &rfds);
             n = n > fd ? n : fd;
           }
-          for (i = 0; i < RARRAY(wfda)->len; i++) {
-            int fd = FIX2INT(RARRAY(wfda)->ptr[i]);
+          for (i = 0; i < RARRAY_LEN(wfda); i++) {
+            int fd = FIX2INT(RARRAY_PTR(wfda)[i]);
             FD_SET(fd, &wfds);
             n = n > fd ? n : fd;
           }
@@ -325,12 +325,12 @@ module Curl
           ready_wfda = rb_ary_new();
 
           /* Collect the fds that are ready */
-          for (i = 0; i < RARRAY(rfda)->len; i++) {
-            VALUE fd = FIX2INT(RARRAY(rfda)->ptr[i]);
+          for (i = 0; i < RARRAY_LEN(rfda); i++) {
+            VALUE fd = FIX2INT(RARRAY_PTR(rfda)[i]);
             if (FD_ISSET(fd, &rfds)) rb_ary_push(ready_rfda, INT2FIX(fd));
           }
-          for (i = 0; i < RARRAY(wfda)->len; i++) {
-            VALUE fd = FIX2INT(RARRAY(wfda)->ptr[i]);
+          for (i = 0; i < RARRAY_LEN(wfda); i++) {
+            VALUE fd = FIX2INT(RARRAY_PTR(wfda)[i]);
             if (FD_ISSET(fd, &wfds)) rb_ary_push(ready_wfda, INT2FIX(fd));
           }
 
